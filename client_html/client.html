@@ -1,0 +1,76 @@
+<html>
+	<head>
+	<!-- 
+	 * Author:		Gianluca Guarini
+	 * Contact: 	gianluca.guarini@gmail.com
+	 * Website:		http://www.gianlucaguarini.com/
+	 * Twitter:		@gianlucaguarini
+	-->
+		<title>Push notification server streaming on a MySQL db</title>
+		<style>
+			dd,dt {
+				float:left;
+				margin:0;
+				padding:5px;
+				clear:both;
+				display:block;
+				width:100%;
+
+			}
+			dt {
+				background:#ddd;
+			}
+			time {
+				color:gray;
+			}
+		</style>
+	</head>
+	<body>
+        <time></time>
+        <div id="container">Loading ...</div>
+    <script src="http://localhost:8000/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+
+        // create a new websocket
+		var bid;
+        var socket = io.connect('http://localhost:8000');
+        // on message received we print all the data inside the #container div
+        socket.on('notification', function (data) {
+        var resultList = "<dl>";
+        $.each(data.result,function(index,user){
+		bid=user.bid;
+            resultList += "<dt>" + user.bid + "</dt>\n" +
+						 "<dt>" + user.customer_number + "</dt>\n" +
+                         "<dt>" + user.customer_name + "</dt>\n" +
+						 "<dd>" + user.booking_from + "<dd>\n" +
+						 "<dd>" + user.booking_lang + "<dd>\n" +
+						 "<dd>" + user.booking_lati + "<dd>\n" +
+						 "<dd>" + user.destination_to + "<dd>\n" +
+						 "<dd>" + user.destination_lang + "<dd>\n" +
+						 "<dd>" + user.destination_lati + "\n" +
+						 "<input type='submit' value='Accept' name='Accept' onclick='Accept("+user.bid+")'/>"+
+						 "<input type='submit' value='Decline' name='decline' onclick='Decline()'/>"
+                         "</dd>";
+        });
+		
+		
+        resultList += "</dl>";
+        $('#container').html(resultList);
+   
+        $('time').html('Last Update:' + data.time);
+      });
+	  
+		function Accept(bid){
+		//  alert(bid);
+		document.getElementById("container").innerHTML = " ";
+		socket.emit('private message',{status:"engage",bid:bid});
+		socket.disconnect();
+	  }
+	  
+		function Decline(){
+		alert("Decline");
+	  }
+    </script>
+    </body>
+</html>
