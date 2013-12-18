@@ -46,7 +46,7 @@ function handler(req, res) {
 var pollingLoop = function() {
 
   // Doing the database query
-  var query = connection.query('SELECT a.bid,a.customer_number,a.customer_name,a.booking_from,a.booking_lang,a.booking_lati,a.destination_to,a.destination_lang,a.destination_lati,b.driver_id from wetaxi_booking a,wetaxi_driver b where a.engaged_did IS NULL AND b.is_engaged=0'),
+  var query = connection.query('SELECT a.bid,a.customer_number,a.customer_name,a.booking_from,a.booking_lang,a.booking_lati,a.destination_to,a.destination_lang,a.destination_lati,b.driver_id from wetaxi_booking a,wetaxi_driver b where a.engaged_did IS NULL AND b.is_engaged=0 group by a.bid'),
     result = []; // this array will contain the result of our db query
 
   // setting the query listeners
